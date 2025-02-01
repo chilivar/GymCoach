@@ -1,3 +1,3 @@
 # EasyTasks
-A web-based task management application. Users can add, edit, delete, and mark completed tasks.
+Сайт позволяет тренерам создавать и предлагать индивидуальные и групповые программы тренировок, делиться советами по питанию и восстановлению, а также отслеживать прогресс своих клиентов.
 
