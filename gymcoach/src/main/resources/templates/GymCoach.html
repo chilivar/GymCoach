@@ -1,0 +1,159 @@
+
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Тренерская деятельность</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+<header>
+    <div class="container">
+        <h1>GYM</h1>
+        <nav>
+            <ul>
+                <li><button onclick="location.href='#'">Главная</button></li>
+                <li><button onclick="location.href='#'">О нас</button></li>
+                <li><button onclick="location.href='#'">Услуги</button></li>
+                <li><button onclick="location.href='#'">Контакты</button></li>
+            </ul>
+        </nav>
+
+        <div class="auth-buttons">
+            <a href="#" class="btn">Войти</a>
+            <a href="#" class="btn">Регистрация</a>
+        </div>
+    </div>
+</header>
+
+<main>
+    <section class="hero">
+        <div class="container">
+            <h2>Добро пожаловать в GYM!</h2>
+            <p>Сервис для создания тренировок и ведения клиентов</p>
+
+            <button class="btn" id="openTrainerModal">Стать тренером</button>
+            <button class="btn" id="openWorkoutModal">Записаться на тренировку</button>
+        </div>
+    </section>
+
+
+
+    <section class="content">
+        <div class="container">
+            <h3>Пользуясь нашими услугами вы получите</h3>
+            <ul>
+                <li>Персональные тренировки</li>
+                <li>План питания</li>
+                <li>Функциональный тренинг</li>
+                <li>Коррекция веса</li>
+                <li>Онлайн-консультации</li>
+            </ul>
+        </div>
+    </section>
+</main>
+
+
+<!-- Модальное окно для заявки на тренера -->
+<div class="modal" id="trainerModal">
+    <div class="modal-content">
+        <span class="close" id="closeTrainerModal">&times;</span>
+        <h3>Заявка на должность тренера</h3>
+        <form>
+            <label for="trainerName">Имя</label>
+            <input type="text" id="trainerName" required>
+
+            <label for="trainerPhone">Телефон</label>
+            <input type="tel" id="trainerPhone" required>
+
+            <label for="trainerExperience">Опыт работы</label>
+            <input type="text" id="trainerExperience" required>
+
+            <label for="trainerMessage">Сообщение</label>
+            <textarea id="trainerMessage"></textarea>
+
+            <button type="submit">Отправить</button>
+        </form>
+    </div>
+</div>
+
+<!-- Модальное окно для записи на тренировку -->
+<div class="modal" id="workoutModal">
+    <div class="modal-content">
+        <span class="close" id="closeWorkoutModal">&times;</span>
+        <h3>Запись на тренировку</h3>
+        <form>
+            <label for="workoutName">Имя</label>
+            <input type="text" id="workoutName" required>
+
+            <label for="workoutPhone">Телефон</label>
+            <input type="tel" id="workoutPhone" required>
+
+            <label for="workoutLevel">Уровень подготовки</label>
+            <select id="workoutLevel">
+                <option>Новичок</option>
+                <option>Средний уровень</option>
+                <option>Продвинутый</option>
+            </select>
+
+            <label for="workoutType">Тип тренировки</label>
+            <select id="workoutType">
+                <option>Персональная</option>
+                <option>Групповая</option>
+                <option>Онлайн</option>
+            </select>
+
+            <button type="submit">Записаться</button>
+        </form>
+    </div>
+</div>
+
+<script>
+    // Функции для работы с модальными окнами
+    const trainerModal = document.getElementById("trainerModal");
+    const workoutModal = document.getElementById("workoutModal");
+    const openTrainerBtn = document.getElementById("openTrainerModal");
+    const openWorkoutBtn = document.getElementById("openWorkoutModal");
+    const closeTrainerBtn = document.getElementById("closeTrainerModal");
+    const closeWorkoutBtn = document.getElementById("closeWorkoutModal");
+
+    openTrainerBtn.onclick = () => trainerModal.style.display = "block";
+    openWorkoutBtn.onclick = () => workoutModal.style.display = "block";
+    closeTrainerBtn.onclick = () => trainerModal.style.display = "none";
+    closeWorkoutBtn.onclick = () => workoutModal.style.display = "none";
+    window.onclick = (event) => {
+        if (event.target === trainerModal) trainerModal.style.display = "none";
+        if (event.target === workoutModal) workoutModal.style.display = "none";
+    };
+</script>
+
+
+<section class="advantages">
+    <div class="container">
+        <div class="advantage-item">
+            <h4>Индивидуальный подход</h4>
+            <p>Каждый клиент получает персонализированную программу тренировок, учитывающую его цели и физическую подготовку.</p>
+        </div>
+        <div class="advantage-item">
+            <h4>Опытные тренеры</h4>
+            <p>Наши специалисты имеют сертификаты и многолетний опыт работы в фитнесе и спорте.</p>
+        </div>
+        <div class="advantage-item">
+            <h4>Гибкий график</h4>
+            <p>Вы сами выбираете удобное время для тренировок, чтобы занятия вписывались в ваш распорядок дня.</p>
+        </div>
+        <div class="advantage-item">
+            <h4>Комплексный подход</h4>
+            <p>Мы учитываем не только физические нагрузки, но и питание, восстановление и ментальное здоровье.</p>
+        </div>
+    </div>
+</section>
+
+<footer>
+    <div class="container">
+        <p>&copy; 2025 Персональный GYM. Все права защищены.</p>
+    </div>
+</footer>
+</body>
+</html>
