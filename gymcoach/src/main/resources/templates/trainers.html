@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html lang="ru" xmlns:th="http://www.thymeleaf.org">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Тренерская деятельность</title>
+  <link rel="stylesheet" th:href="@{/css/style.css}">
+</head>
+<body>
+<h2>Список тренеров</h2>
+<table border="1">
+  <thead>
+  <tr>
+    <th>Имя</th>
+    <th>Телефон</th>
+    <th>Опыт</th>
+    <th>Сообщение</th>
+  </tr>
+  </thead>
+  <tbody>
+  <tr th:each="trainer : ${trainers}">
+    <td th:text="${trainer.name}"></td>
+    <td th:text="${trainer.phone}"></td>
+    <td th:text="${trainer.experience}"></td>
+    <td th:text="${trainer.message}"></td>
+  </tr>
+  </tbody>
+</table>
+<a href="/">На главную</a>
+</body>
+</html>

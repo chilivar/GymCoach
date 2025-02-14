@@ -31,10 +31,13 @@
     <section class="hero">
         <div class="container">
             <h2>Добро пожаловать в GYM!</h2>
+            <p th:if="${successMessage}" th:text="${successMessage}" style="color: white;"></p>
             <p>Сервис для создания тренировок и ведения клиентов</p>
 
             <button class="btn" id="openTrainerModal">Стать тренером</button>
             <button class="btn" id="openWorkoutModal">Записаться на тренировку</button>
+            <button class="btn" id="openTrainerTableModel" onclick="window.location.href='/trainers'">Тренера</button>
+            <button class="btn" id="deleteTrainerModal">Удалить тренера</button>
         </div>
     </section>
 
@@ -60,21 +63,22 @@
     <div class="modal-content">
         <span class="close" id="closeTrainerModal">&times;</span>
         <h3>Заявка на должность тренера</h3>
-        <form>
+        <form action="/addTrainer" method="post">
             <label for="trainerName">Имя</label>
-            <input type="text" id="trainerName" required>
+            <input type="text" id="trainerName" name="name" required>
 
             <label for="trainerPhone">Телефон</label>
-            <input type="tel" id="trainerPhone" required>
+            <input type="tel" id="trainerPhone" name="phone" required>
 
             <label for="trainerExperience">Опыт работы</label>
-            <input type="text" id="trainerExperience" required>
+            <input type="text" id="trainerExperience" name="experience" required>
 
             <label for="trainerMessage">Сообщение</label>
-            <textarea id="trainerMessage"></textarea>
+            <textarea id="trainerMessage" name="message"></textarea>
 
             <button type="submit">Отправить</button>
         </form>
+
     </div>
 </div>
 
@@ -109,23 +113,61 @@
     </div>
 </div>
 
+
+<!-- Удаление -->
+<div class="modal" id="deleteModal">
+    <div class="modal-content">
+        <span class="close" id="closeDeleteModal">&times;</span>
+        <table>
+            <tr>
+                <th>Имя</th>
+                <th>Телефон</th>
+                <th>Опыт</th>
+                <th>Действие</th>
+            </tr>
+            <tr th:each="trainer : ${trainers}">
+                <td th:text="${trainer.name}"></td>
+                <td th:text="${trainer.phone}"></td>
+                <td th:text="${trainer.experience}"></td>
+                <td>
+                    <form action="/deleteTrainer" method="post">
+                        <input type="hidden" name="id" th:value="${trainer.id}">
+                        <button type="submit">Удалить</button>
+                    </form>
+                </td>
+            </tr>
+        </table>
+    </div>
+</div>
+
 <script>
     // Функции для работы с модальными окнами
     const trainerModal = document.getElementById("trainerModal");
     const workoutModal = document.getElementById("workoutModal");
+    const deleteModal = document.getElementById("deleteModal");
+
+    const openDeleteBtn = document.getElementById("deleteTrainerModal");
     const openTrainerBtn = document.getElementById("openTrainerModal");
     const openWorkoutBtn = document.getElementById("openWorkoutModal");
+
+    const closeDeleteBtn = document.getElementById("closeDeleteModal");
     const closeTrainerBtn = document.getElementById("closeTrainerModal");
     const closeWorkoutBtn = document.getElementById("closeWorkoutModal");
 
+    openDeleteBtn.onclick = () => deleteModal.style.display = "block";
     openTrainerBtn.onclick = () => trainerModal.style.display = "block";
     openWorkoutBtn.onclick = () => workoutModal.style.display = "block";
+
+    closeDeleteBtn.onclick = () => deleteModal.style.display = "none";
     closeTrainerBtn.onclick = () => trainerModal.style.display = "none";
     closeWorkoutBtn.onclick = () => workoutModal.style.display = "none";
     window.onclick = (event) => {
         if (event.target === trainerModal) trainerModal.style.display = "none";
         if (event.target === workoutModal) workoutModal.style.display = "none";
+        if (event.target === deleteModal) deleteModal.style.display = "none";
     };
+
+
 </script>
 
 
