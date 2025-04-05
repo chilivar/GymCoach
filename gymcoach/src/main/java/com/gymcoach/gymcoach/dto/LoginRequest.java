@@ -1,11 +1,12 @@
 package com.gymcoach.gymcoach.dto;
 
-
 public class LoginRequest {
     private String username;
     private String password;
     private String email;
     private String token;
+    private Long roleId;
+
     public void setToken(String token) {
         this.token = token;
     }
@@ -29,5 +30,13 @@ public class LoginRequest {
     }
     public void setEmail(String email) {
         this.email = email;
+    }
+
+    public Long getRoleId() {
+        return roleId;
+    }
+
+    public void setRoleId(Long roleId) {
+        this.roleId = roleId;
     }
 }

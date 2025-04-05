@@ -1,5 +1,6 @@
 package com.gymcoach.gymcoach.services;
 
+import com.gymcoach.gymcoach.models.Trainer;
 import com.gymcoach.gymcoach.models.User;
 import com.gymcoach.gymcoach.repositories.AuthRepository;
 import org.springframework.mail.SimpleMailMessage;
@@ -7,38 +8,67 @@ import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.stereotype.Service;
 
 import java.util.Collections;
+import java.util.List;
 import java.util.Map;
-import java.util.Objects;
 import java.util.UUID;
 
 @Service
 public class AuthService {
     private final AuthRepository authRepository;
     private final JavaMailSender mailSender;
+
     public AuthService(AuthRepository authRepository, JavaMailSender mailSender) {
         this.authRepository = authRepository;
         this.mailSender = mailSender;
     }
 
-    public String register(String username, String password, String email) {
-        if(authRepository.findByEmail(email) != null || authRepository.findByUsername(username) != null) {
-            return "Email or username already in use";
-        }
+    public List<User> getAllUsers() {
+        return authRepository.findAll();
+    }
+
+    public String register(String username, String password, String email, Long roleId) {
         User user = new User();
         user.setUsername(username);
         user.setPassword(password);
         user.setEmail(email);
-        user.setRole_id(3L);
+        user.setRoleId(roleId); // Используем переданную роль
+        user.setConfirmed(); // Подтверждение по умолчанию false
         String token = UUID.randomUUID().toString();
         user.setToken(token);
+
         authRepository.save(user);
-        String confirmationLink = "http://localhost:8080/api/auth/confirm-email?token=" + token;
-        SimpleMailMessage message = new SimpleMailMessage();
-        message.setTo(email);
-        message.setSubject("Подтверждение регистрации");
-        message.setText("Перейдите по ссылке для подтверждения регистрации " + confirmationLink);
-        mailSender.send(message);
         return "Registration successful";
+    }
+
+    public String updateUser(User user) {
+        User existingUser = authRepository.findByUsername(user.getUsername());
+        if (existingUser == null) {
+            throw new RuntimeException("Пользователь не найден");
+        }
+
+        // Обновляем только разрешенные поля
+        existingUser.setEmail(user.getEmail() != null ? user.getEmail() : existingUser.getEmail());
+        existingUser.setPassword(user.getPassword() != null ? user.getPassword() : existingUser.getPassword());
+        existingUser.setRoleId(user.getRoleId() != null ? user.getRoleId() : existingUser.getRoleId());
+
+        authRepository.update(existingUser);
+        return "User updated successfully";
+    }
+
+    public boolean hasAdminAccessByToken(String token) {
+        User user = authRepository.findByToken(token);
+        if (user == null) {
+            return false;
+        }
+        return user.getRoleId() == 1L;
+    }
+
+    public boolean hasAdminAccess(String username) {
+        User user = authRepository.findByUsername(username);
+        if (user == null) {
+            return false;
+        }
+        return user.getRoleId() == 1L;
     }
 
     public Map<String, String> login(String username, String password) {
@@ -48,13 +78,13 @@ public class AuthService {
         }
         String token = UUID.randomUUID().toString();
         user.setToken(token);
-        authRepository.save(user);
+        authRepository.update(user);
         return Collections.singletonMap("token", token);
     }
 
     public boolean validateToken(String token) {
         User user = authRepository.findByToken(token);
-        return user != null && !Objects.equals(user.getToken(), "");
+        return user != null;
     }
 
     public String logout(String token) {
@@ -63,9 +93,10 @@ public class AuthService {
             return null;
         }
         user.setToken(null);
-        authRepository.save(user);
+        authRepository.update(user);
         return "Logout successful";
     }
+
     public String confirmEmail(String token) {
         User user = authRepository.findByToken(token);
         if(user == null) {
@@ -73,7 +104,7 @@ public class AuthService {
         }
         user.setToken(null);
         user.setConfirmed();
-        authRepository.save(user);
+        authRepository.update(user);
         return "Confirm email successful";
     }
 }
