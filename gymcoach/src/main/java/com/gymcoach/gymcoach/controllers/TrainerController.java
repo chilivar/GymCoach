@@ -1,12 +1,14 @@
 package com.gymcoach.gymcoach.controllers;
 
 import com.gymcoach.gymcoach.models.Trainer;
+import com.gymcoach.gymcoach.dto.TrainerDTO;
 import com.gymcoach.gymcoach.services.TrainerService;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.net.URI;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @RestController
 @RequestMapping("/api/trainers")
@@ -19,16 +21,30 @@ public class TrainerController {
     }
 
     @GetMapping
-    public ResponseEntity<List<Trainer>> getAllTrainers() {
+    public ResponseEntity<List<TrainerDTO>> getAllTrainers(@RequestParam(defaultValue = "ru") String lang) {
         List<Trainer> trainers = trainerService.getAllTrainers();
-        return ResponseEntity.ok(trainers);
+        List<TrainerDTO> trainerDTOs = trainers.stream()
+                .map(trainer -> new TrainerDTO(
+                        trainer.getId(),
+                        trainer.getName(lang),
+                        trainer.getSpecialization(lang),
+                        trainer.getExperience()
+                ))
+                .collect(Collectors.toList());
+        return ResponseEntity.ok(trainerDTOs);
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<Trainer> getTrainerById(@PathVariable Long id) {
+    public ResponseEntity<TrainerDTO> getTrainerById(@PathVariable Long id, @RequestParam(defaultValue = "ru") String lang) {
         Trainer trainer = trainerService.getTrainerById(id);
         if (trainer != null) {
-            return ResponseEntity.ok(trainer);
+            TrainerDTO trainerDTO = new TrainerDTO(
+                    trainer.getId(),
+                    trainer.getName(lang),
+                    trainer.getSpecialization(lang),
+                    trainer.getExperience()
+            );
+            return ResponseEntity.ok(trainerDTO);
         }
         return ResponseEntity.notFound().build();
     }

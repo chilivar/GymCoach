@@ -23,8 +23,10 @@ public class TrainerRepository {
     private RowMapper<Trainer> trainerRowMapper = (rs, rowNum) ->
             new Trainer(
                     rs.getLong("id"),
-                    rs.getString("name"),
-                    rs.getString("specialization"),
+                    rs.getString("name_ru"),
+                    rs.getString("name_en"),
+                    rs.getString("specialization_ru"),
+                    rs.getString("specialization_en"),
                     rs.getInt("experience")
             );
 
@@ -45,12 +47,14 @@ public class TrainerRepository {
             KeyHolder keyHolder = new GeneratedKeyHolder();
             jdbcTemplate.update(connection -> {
                 PreparedStatement ps = connection.prepareStatement(
-                        "INSERT INTO trainer (name, specialization, experience) VALUES (?, ?, ?)",
+                        "INSERT INTO trainer (name_ru, name_en, specialization_ru, specialization_en, experience) VALUES (?, ?, ?, ?, ?)",
                         Statement.RETURN_GENERATED_KEYS
                 );
-                ps.setString(1, trainer.getName());
-                ps.setString(2, trainer.getSpecialization());
-                ps.setInt(3, trainer.getExperience());
+                ps.setString(1, trainer.getNameRu());
+                ps.setString(2, trainer.getNameEn());
+                ps.setString(3, trainer.getSpecializationRu());
+                ps.setString(4, trainer.getSpecializationEn());
+                ps.setInt(5, trainer.getExperience());
                 return ps;
             }, keyHolder);
 
@@ -59,13 +63,13 @@ public class TrainerRepository {
         } else {
             update(trainer);
         }
-        return trainer; // Возвращаем сохраненного тренера с новым ID
+        return trainer;
     }
 
     public void update(Trainer trainer) {
         jdbcTemplate.update(
-                "UPDATE trainer SET name = ?, specialization = ?, experience = ? WHERE id = ?",
-                trainer.getName(), trainer.getSpecialization(), trainer.getExperience(), trainer.getId()
+                "UPDATE trainer SET name_ru = ?, name_en = ?, specialization_ru = ?, specialization_en = ?, experience = ? WHERE id = ?",
+                trainer.getNameRu(), trainer.getNameEn(), trainer.getSpecializationRu(), trainer.getSpecializationEn(), trainer.getExperience(), trainer.getId()
         );
     }
 
@@ -73,4 +77,3 @@ public class TrainerRepository {
         jdbcTemplate.update("DELETE FROM trainer WHERE id = ?", id);
     }
 }
-

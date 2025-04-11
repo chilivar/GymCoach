@@ -1,6 +1,5 @@
 package com.gymcoach.gymcoach.services;
 
-
 import com.gymcoach.gymcoach.models.Trainer;
 import com.gymcoach.gymcoach.repositories.TrainerRepository;
 import org.springframework.stereotype.Service;
@@ -25,7 +24,7 @@ public class TrainerService {
     }
 
     public Trainer saveTrainer(Trainer trainer) {
-        return trainerRepository.save(trainer); // Изменено с void на Trainer
+        return trainerRepository.save(trainer);
     }
 
     public void deleteTrainer(Long id) {
