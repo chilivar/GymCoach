@@ -2,7 +2,11 @@ package com.gymcoach.gymcoach.controllers;
 
 import com.gymcoach.gymcoach.models.Trainer;
 import com.gymcoach.gymcoach.dto.TrainerDTO;
+import com.gymcoach.gymcoach.models.TrainerComment;
+import com.gymcoach.gymcoach.services.TrainerCommentService;
+import com.gymcoach.gymcoach.services.TrainerLikeService;
 import com.gymcoach.gymcoach.services.TrainerService;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -76,5 +80,42 @@ public class TrainerController {
         }
         trainerService.deleteTrainer(id);
         return ResponseEntity.ok().build();
+    }
+
+    @Autowired
+    private TrainerCommentService commentService;
+
+    @Autowired
+    private TrainerLikeService likeService;
+
+    // Добавить комментарий
+    @PostMapping("/{trainerId}/comment")
+    public ResponseEntity<String> comment(
+            @PathVariable Long trainerId,
+            @RequestParam Long userId,
+            @RequestParam String text) {
+        commentService.addComment(trainerId, userId, text);
+        return ResponseEntity.ok("Комментарий добавлен");
+    }
+
+    // Поставить лайк
+    @PostMapping("/{trainerId}/like")
+    public ResponseEntity<String> like(
+            @PathVariable Long trainerId,
+            @RequestParam Long userId) {
+        likeService.likeTrainer(trainerId, userId);
+        return ResponseEntity.ok("Лайк добавлен");
+    }
+
+    // Получить все комментарии по тренеру
+    @GetMapping("/{trainerId}/comments")
+    public ResponseEntity<List<TrainerComment>> getComments(@PathVariable Long trainerId) {
+        return ResponseEntity.ok(commentService.getComments(trainerId));
+    }
+
+    // Получить количество лайков
+    @GetMapping("/{trainerId}/likes")
+    public ResponseEntity<Integer> getLikes(@PathVariable Long trainerId) {
+        return ResponseEntity.ok(likeService.getLikeCount(trainerId));
     }
 }
